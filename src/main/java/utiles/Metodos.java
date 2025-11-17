@@ -8,25 +8,24 @@ public class Metodos {
 	
 	private static Properties propiedad = new Properties();
 	
-	public static boolean cargarPropiedades() {
-		boolean valido = false;
-
+	
+	public static void leerPropiedades() {
 		try (FileInputStream input = new FileInputStream("src/main/resources/application.properties")){
 			propiedad.load(input);
-			valido = true;
+			
+			System.out.println("Propiedades leidas");
 			
 		} catch (IOException e) {
 			System.err.println("Error al cargar el archivo");
 			System.out.println("El archivo application.properties no se cargo");
 			
-			valido = false;
-			
 		}
-		return valido;
 		
 	}
 	
-	public static String getProperties() {
+	public static String getProperties(String prop) {
+		return propiedad.getProperty(prop);
+		
 	}
 	
 }

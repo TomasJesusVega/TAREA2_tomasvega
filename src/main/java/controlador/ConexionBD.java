@@ -9,18 +9,14 @@ public class ConexionBD {
 
 	private static Connection conexion = null;
 	
-	private static boolean cargado = Metodos.cargarPropiedades();
-	
-	private static JDBC = propiedad.getProperty("urlBdd");
-	private static String USUARIO;
-	private static String CONTRASENIA;
+	private static String URL = Metodos.getProperties("urlBdd");
+	private static String USUARIO = Metodos.getProperties("usuarioBdd");
+	private static String CONTRASENIA = Metodos.getProperties("contraseniaBdd");
 	
 	public static Connection nuevaConexion() {
-		
-		
-		if (cargado) {
+		if (conexion == null) {
 			try {
-				conexion = DriverManager.getConnection(JDBC, USUARIO, CONTRASENIA);
+				conexion = DriverManager.getConnection(URL, USUARIO, CONTRASENIA);
 				
 				System.out.println("Conexion establecida con exito");
 				
@@ -28,12 +24,26 @@ public class ConexionBD {
 				System.err.println("Error al conectar con la base de datos");
 				
 			}
-			return conexion;
-			
-		} else {
-			return conexion;
 			
 		}
+			return conexion;
+		
+	}
+	
+	public static Connection cerrarConexion() {
+		if (conexion != null) {
+			try {
+				conexion.close();
+				
+				System.out.println("Conexion cerrada");
+				
+			} catch (SQLException e) {
+				System.err.println("Error al cerrar la base de datos");
+				
+			}
+			
+		}
+		return conexion;
 		
 	}
 	
