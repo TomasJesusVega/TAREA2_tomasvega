@@ -31,7 +31,26 @@ public class Metodos {
 		
 	}
 	
-	
+	public static boolean verificarAdmin(String usuario, String contrasenia) {
+		boolean esValido = false;
+		
+		leerPropiedades();
+		
+		String usuarioAdmin = propiedad.getProperty("usuarioAdmin").trim();
+        String contraseniaAdmin = propiedad.getProperty("contraseniaAdmin").trim();
+
+		if (usuarioAdmin.equals(usuario) && contraseniaAdmin.equals(contrasenia)) {
+			System.out.println("Sesion iniciada correctamente");
+			
+			esValido = true;
+			
+		} else {
+			esValido = false;
+			
+		}
+		return esValido;
+		
+	}
 	
 	
 	

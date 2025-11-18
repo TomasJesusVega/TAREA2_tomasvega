@@ -1,11 +1,10 @@
-package controlador;
+package utiles;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import utiles.Metodos;
 
-public class ConexionBD {
+public class ConexionBDD {
 
 	private static Connection conexion = null;
 	
@@ -18,9 +17,12 @@ public class ConexionBD {
 			try {
 				conexion = DriverManager.getConnection(URL, USUARIO, CONTRASENIA);
 				
+				//borrar al final
 				System.out.println("Conexion establecida con exito");
 				
 			} catch (SQLException ex) {
+				ex.printStackTrace();
+				//borrar al final
 				System.err.println("Error al conectar con la base de datos");
 				
 			}

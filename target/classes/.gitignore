@@ -1,7 +1,6 @@
-/controlador/
-/vista/
-/META-INF/
-/utiles/
-/dao/
-/entidades/
 /service/
+/vista/
+/utiles/
+/controlador/
+/dao/
+/META-INF/
