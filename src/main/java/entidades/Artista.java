@@ -4,7 +4,7 @@ import java.util.Set;
 
 public class Artista {
 
-	private Long idArt;
+	private Long idArtista;
 	private String apodo = null;
 	private Set<Especialidad> especialidades;
 
@@ -12,19 +12,19 @@ public class Artista {
 		super();
 	}
 
-	public Artista(Long idArt, String apodo, Set<Especialidad> especialidades) {
+	public Artista(Long idArtista, String apodo, Set<Especialidad> especialidades) {
 		super();
-		this.idArt = idArt;
+		this.idArtista = idArtista;
 		this.apodo = apodo;
 		this.especialidades = especialidades;
 	}
 
-	public Long getIdArt() {
-		return idArt;
+	public Long getIdArtista() {
+		return idArtista;
 	}
 
-	public void setIdArt(Long idArt) {
-		this.idArt = idArt;
+	public void setIdArtista(Long idArtista) {
+		this.idArtista = idArtista;
 	}
 
 	public String getApodo() {

@@ -1,7 +1,15 @@
 package dao;
 
-public class NumeroDAO {
+import java.sql.Connection;
 
+import utiles.ConexionBDD;
+
+public class NumeroDAO {
+	public static void insertarNumero() {
+		Connection conexion = ConexionBDD.nuevaConexion();
+		
+		String InsertNumero = "INSERT INTO numero(nombre_numero, orden, duracion, id_espectaculo) VALUES(?, ?, ?, ?)";
+	}
 	/**
 	 * while(ResultSet.next) {
 	 * Espectaculo esp = new Espectaculo();

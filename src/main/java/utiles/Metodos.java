@@ -40,8 +40,6 @@ public class Metodos {
         String contraseniaAdmin = propiedad.getProperty("contraseniaAdmin").trim();
 
 		if (usuarioAdmin.equals(usuario) && contraseniaAdmin.equals(contrasenia)) {
-			System.out.println("Sesion iniciada correctamente");
-			
 			esValido = true;
 			
 		} else {
@@ -51,8 +49,5 @@ public class Metodos {
 		return esValido;
 		
 	}
-	
-	
-	
 	
 }
