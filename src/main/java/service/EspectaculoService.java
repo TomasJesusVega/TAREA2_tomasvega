@@ -13,7 +13,7 @@ public class EspectaculoService {
 	 * @param nombreEspectaculo
 	 * @return
 	 */
-	public static boolean validarnombreEspectaculo(String nombreEspectaculo) {
+	public static boolean validarNombreEspectaculo(String nombreEspectaculo) {
 		boolean esValido = false;
 		
 		if (!nombreEspectaculo.isEmpty() & nombreEspectaculo.length() <= 25) {
@@ -25,6 +25,22 @@ public class EspectaculoService {
 		}
 		return esValido;
 		
+	}
+	
+	public static boolean validarFechas(String fechaInicial, String fechaFinal) {
+		boolean esValido = false;
+		
+		return esValido;
+	}
+	
+	public static boolean validarCrearEspectaculo(String nombreEspectaculo, String fechaInicial, String fechaFinal) {
+		boolean espectaculoValido = false;
+		if (validarNombreEspectaculo(nombreEspectaculo)) {
+			
+		}
+		
+		
+		return espectaculoValido;
 	}
 	
 	public static void mostrarListaEspectaculo() {

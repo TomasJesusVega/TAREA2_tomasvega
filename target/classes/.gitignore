@@ -1,10 +1,2 @@
-/service/
 /vista/
-/utiles/
-/controlador/
-/dao/
-/META-INF/
-/entidades/
-/UsuarioFactory/
-/usuariofactory/
-/factory/
+/service/
