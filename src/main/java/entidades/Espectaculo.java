@@ -1,11 +1,10 @@
 package entidades;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Espectaculo implements Serializable {
+public class Espectaculo {
 	private Long id;
 	private String nombre;
 	private LocalDate fechaini;
@@ -34,6 +33,16 @@ public class Espectaculo implements Serializable {
 		this.nombre = nombre;
 		this.fechaini = fechaini;
 		this.fechafin = fechafin;
+	}
+	
+	
+
+	public Espectaculo(String nombre, LocalDate fechaini, LocalDate fechafin, Set<Numero> numeros) {
+		super();
+		this.nombre = nombre;
+		this.fechaini = fechaini;
+		this.fechafin = fechafin;
+		this.numeros = numeros;
 	}
 
 	public Long getId() {

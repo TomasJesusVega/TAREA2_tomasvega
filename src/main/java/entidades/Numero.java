@@ -2,20 +2,27 @@ package entidades;
 
 public class Numero {
 	private Long id;
-	private int orden;
 	private String nombre;
 	private double duracion;
-
+	private int orden;
+	
 	public Numero() {
 		super();
 	}
 
-	public Numero(Long id, int orden, String nombre, double duracion) {
+	public Numero(Long id, String nombre, double duracion, int orden) {
 		super();
 		this.id = id;
-		this.orden = orden;
 		this.nombre = nombre;
 		this.duracion = duracion;
+		this.orden = orden;
+	}
+
+	public Numero(String nombre, double duracion, int orden) {
+		super();
+		this.nombre = nombre;
+		this.duracion = duracion;
+		this.orden = orden;
 	}
 
 	public Long getId() {

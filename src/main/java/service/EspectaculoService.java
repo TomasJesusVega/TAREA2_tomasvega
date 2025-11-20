@@ -1,6 +1,13 @@
 package service;
 
+import java.time.LocalDate;
+import java.util.Set;
+
+import entidades.Espectaculo;
+import entidades.Numero;
+
 public class EspectaculoService {
+	
 	/**
 	 * 
 	 * @param nombreEspectaculo
@@ -17,6 +24,23 @@ public class EspectaculoService {
 			
 		}
 		return esValido;
+		
+	}
+	
+	public static void mostrarListaEspectaculo() {
+		
+	}
+	
+	/**
+	 * 
+	 * @param nombreEspectaculo
+	 * @param fechaInicial
+	 * @param fechaFinal
+	 * @param numeros
+	 * @return
+	 */
+	public Espectaculo crearEspectaculo(String nombreEspectaculo, LocalDate fechaInicial, LocalDate fechaFinal, Set<Numero> numeros) {
+		return new Espectaculo(nombreEspectaculo, fechaInicial, fechaFinal, numeros);
 		
 	}
 }
