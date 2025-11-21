@@ -2,8 +2,8 @@ package entidades;
 
 public class Persona {
 	protected Long id;
-	protected String email;
 	protected String nombre;
+	protected String email;
 	protected String nacionalidad;
 
 	public Persona() {
@@ -15,6 +15,14 @@ public class Persona {
 		this.id = id;
 		this.email = email;
 		this.nombre = nombre;
+		this.nacionalidad = nacionalidad;
+	}
+
+	
+	public Persona(String nombre, String email, String nacionalidad) {
+		super();
+		this.nombre = nombre;
+		this.email = email;
 		this.nacionalidad = nacionalidad;
 	}
 

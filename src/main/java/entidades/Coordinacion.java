@@ -18,6 +18,12 @@ public class Coordinacion extends Persona {
 		this.fechaSenior = fechaSenior;
 	}
 
+	public Coordinacion(boolean senior, LocalDate fechaSenior) {
+		super();
+		this.senior = senior;
+		this.fechaSenior = fechaSenior;
+	}
+
 	public Long getIdCoord() {
 		return idCoord;
 	}

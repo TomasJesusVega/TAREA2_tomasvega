@@ -28,9 +28,8 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `artista` (
-  `id_art` bigint(20) NOT NULL,
+  `id_artista` bigint(20) NOT NULL,
   `apodo` varchar(20) DEFAULT NULL,
-  `especialidades` enum('ACROBACIA','HUMOR','MALABARISMO','EQUILIBRISMO','MAGIA') NOT NULL,
   `id_usuario` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -43,6 +42,17 @@ CREATE TABLE `artista` (
 CREATE TABLE `artistanumero` (
   `id_numero` bigint(20) NOT NULL,
   `id_artista` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `artistaespecialidad`
+--
+
+CREATE TABLE `artistaespecialidad` (
+  `id_artista` bigint(20) NOT NULL,
+  `especialidades` enum('ACROBACIA','HUMOR','MALABARISMO','EQUILIBRISMO','MAGIA') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -110,7 +120,7 @@ CREATE TABLE `usuario` (
 -- Indices de la tabla `artista`
 --
 ALTER TABLE `artista`
-  ADD PRIMARY KEY (`id_art`),
+  ADD PRIMARY KEY (`id_artista`),
   ADD KEY `id_usuario_FK` (`id_usuario`);
 
 --
@@ -120,6 +130,11 @@ ALTER TABLE `artistanumero`
   ADD KEY `id_numeroartista_FK` (`id_numero`),
   ADD KEY `id_artistanumero_FK` (`id_artista`);
 
+--
+-- Indices de la tabla `artistanumero`
+--
+ALTER TABLE `artistaespecialidad`
+  ADD KEY `id_artistaespecialidad_FK` (`id_artista`);
 --
 -- Indices de la tabla `coordinacion`
 --
@@ -159,7 +174,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `artista`
 --
 ALTER TABLE `artista`
-  MODIFY `id_art` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_artista` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `coordinacion`
@@ -199,9 +214,14 @@ ALTER TABLE `artista`
 -- Filtros para la tabla `artistanumero`
 --
 ALTER TABLE `artistanumero`
-  ADD CONSTRAINT `id_artistanumero_FK` FOREIGN KEY (`id_artista`) REFERENCES `artista` (`id_art`),
+  ADD CONSTRAINT `id_artistanumero_FK` FOREIGN KEY (`id_artista`) REFERENCES `artista` (`id_artista`),
   ADD CONSTRAINT `id_numeroartista_FK` FOREIGN KEY (`id_numero`) REFERENCES `numero` (`id_numero`);
 
+--
+-- Filtros para la tabla `artistaespecialidad`
+--
+ALTER TABLE `artistaespecialidad`
+  ADD CONSTRAINT `id_artistaespecialidad_FK` FOREIGN KEY (`id_artista`) REFERENCES `artista` (`id_artista`);
 --
 -- Filtros para la tabla `coordinacion`
 --

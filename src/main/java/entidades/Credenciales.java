@@ -3,18 +3,26 @@ package entidades;
 public class Credenciales {
 	private Long id;
 	private String nombre;
-	private String password;
+	private String contrasenia;
 	private Perfil perfil;
 
 	public Credenciales() {
 		super();
 	}
 
-	public Credenciales(Long id, String nombre, String password, Perfil perfil) {
+	public Credenciales(Long id, String nombre, String contrasenia, Perfil perfil) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
-		this.password = password;
+		this.contrasenia = contrasenia;
+		this.perfil = perfil;
+	}
+
+	
+	public Credenciales(String nombre, String contrasenia, Perfil perfil) {
+		super();
+		this.nombre = nombre;
+		this.contrasenia = contrasenia;
 		this.perfil = perfil;
 	}
 
@@ -34,12 +42,12 @@ public class Credenciales {
 		this.nombre = nombre;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getContrasenia() {
+		return contrasenia;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setContrasenia(String contrasenia) {
+		this.contrasenia = contrasenia;
 	}
 
 	public Perfil getPerfil() {

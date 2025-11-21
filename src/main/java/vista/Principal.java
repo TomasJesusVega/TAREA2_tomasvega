@@ -2,15 +2,15 @@ package vista;
 
 import java.util.Scanner;
 
+import controller.UsuarioController;
 import entidades.Perfil;
 import entidades.Sesion;
-import utiles.Metodos;
+import utiles.Validadores;
 
 public class Principal extends Menu {
 	public static void main(String[] args) {
+		Sesion nuevaSesion = UsuarioController.getSesion();
 		Scanner sc = new Scanner(System.in);
-
-		Sesion nuevaSesion = new Sesion("Invitado", Perfil.INVITADO);
 
 		boolean ejecucion = true;
 		System.out.println("============================================\n");
@@ -21,162 +21,149 @@ public class Principal extends Menu {
 		do {
 			switch (nuevaSesion.getPerfil()) {
 			case INVITADO:
-				System.out.println("\nSesion actual: " + nuevaSesion.getNombre() + "\n");
+				boolean sesionInvitado = true;
+				do {
+					try {
+						System.out.println("\nSesion actual: " + nuevaSesion.getPerfil() + "\n");
+						System.out.println("Introduzca el numero al lado de la opcion para seleccionarla");
+						System.out.println("1. Login");
+						System.out.println("2. Ver espectaculos");
+						System.out.println("0. Cerrar programa");
+						String opcionInvitado = sc.nextLine().trim();
 
-				Menu.menuInvitado();
+						int opcInvInt = Integer.parseInt(opcionInvitado);
 
-				int opcionInvitado = sc.nextInt();
+						switch (opcInvInt) {
+						case 0:
+							System.out.println("Desea cerrar el programa? si/no");
+							String opcionCerrarPrograma = sc.nextLine().toUpperCase().trim();
+							switch (opcionCerrarPrograma) {
+							case "SI": {
+								System.out.println("Saliendo...");
+								ejecucion = false;
+								break;
+							}
+							case "NO": {
+								ejecucion = true;
+								break;
+							}
+							case " ": {
+								System.out.println("Error al introducir una opcion, introduzca entradas validas");
+								ejecucion = true;
+								break;
+							}
+							default:
+								System.out.println("Error al introducir una opcion, introduzca entradas validas");
+								ejecucion = true;
+							}
+							break;
 
-				switch (opcionInvitado) {
-				case 0:
-					Metodos.consumirLinea(sc);
+						case 1:
+							System.out.println("Introduzca su nombre de usuario:");
+							String nombreUsuario = sc.nextLine().trim();
+							System.out.println("Introduzca su contrasenia:");
+							String contrasenia = sc.nextLine().trim();
+							boolean esValido = UsuarioController.validarInicioSesion(nombreUsuario, contrasenia);
+							if (esValido) {
+								if (UsuarioController.verificarInicioSesion(nombreUsuario, contrasenia) != null) {
+									nuevaSesion = UsuarioController.verificarInicioSesion(nombreUsuario, contrasenia);
+									sesionInvitado = false;
+									System.out.println("Sesion iniciada con exito");
+								}
+							} else {
+								sesionInvitado = true;
+								System.out.println("Credenciales incorrectas, intentelo de nuevo");
+								break;
+							}
 
-					ejecucion = Metodos.cerrarPrograma(sc);
+						case 2:
+							espectaculoController.listarEspectaculos();
+							break;
 
-					break;
+						default:
+							break;
 
-				case 1:
-					Metodos.consumirLinea(sc);
-
-					System.out.println("Introduzca su nombre de usuario");
-
-					String nombreUsuario = sc.nextLine().trim();
-
-					System.out.println("Introduzca su contrasenia");
-
-					String contrasenia = sc.nextLine().trim();
-
-					nuevaSesion.setNombre("Admin");
-					nuevaSesion.setPerfil(Perfil.ADMIN);
-
-					ejecucion = true;
-
-					break;
-
-				case 2:
-					Metodos.consumirLinea(sc);
-
-					System.out.println("Lista de espectaculos:");
-
-					ejecucion = true;
-
-					break;
-
-				default:
-
-					break;
-
-				}
-				break;
+						}
+						break;
+					} catch (NumberFormatException e) {
+						System.out.println("Error al introducir una opcion, introduzca entradas validas");
+					}
+				} while (sesionInvitado);
 
 			case ADMIN:
-				System.out.println("\nSesion actual: " + nuevaSesion.getNombre() + "\n");
+				try {
+					System.out.println("\nSesion actual: " + nuevaSesion.getPerfil() + "\n");
+					System.out.println("Introduzca el numero al lado de la opcion para seleccionarla");
+					System.out.println("1. Gestionar personas y credenciales");
+					System.out.println("2. Gestionar espectaculos");
+					System.out.println("0. Logout");
+					String opcionAdmin = sc.nextLine();
 
-				Menu.menuAdminInicial();
+					int opcAdmInt = Integer.parseInt(opcionAdmin);
 
-				int opcionAdmin = sc.nextInt();
-
-				switch (opcionAdmin) {
-				case 0:
-					Metodos.consumirLinea(sc);
-
-					System.out.println("Desea cerrar la sesion? Y para si, N para no");
-
-					String opcionSalir = sc.nextLine().toUpperCase().trim();
-
-					switch (opcionSalir.toUpperCase()) {
-					case "si": {
-						nuevaSesion.setNombre("Invitado");
-						nuevaSesion.setPerfil(Perfil.INVITADO);
-
-						ejecucion = true;
-
+					switch (opcAdmInt) {
+					case 0:
+						Menu.cerrarSesion();
 						break;
 
-					}
-					case "no": {
-						ejecucion = true;
+					case 1:
+						String opcionGestionUsuario = Menu.menuGestionUsuario();
 
+						int opcGesUsuInt = Integer.parseInt(opcionGestionUsuario);
+
+						switch (opcGesUsuInt) {
+						case 1:
+							String nombreReal = Validadores.validarNombreReal();
+							String email = Validadores.validarEmail();
+							String nacionalidad = Validadores.validarNacionalidad();
+							Perfil perfil = Validadores.validarPerfilPersona();
+							if (perfil == null) {
+								Menu.errorCampoIncorrecto();
+								break;
+							}
+							if (Validadores.validarPerfilPersona() != null) {
+								switch (perfil.toString()) {
+								case "Artista":
+									String apodo = Menu.tieneApodo();
+									break;
+
+								case "Coordinacion":
+									break;
+
+								default:
+									break;
+								}
+							}
+
+							break;
+
+						default:
+							break;
+						}
 						break;
 
-					}
-					case " ": {
-						System.err.println("Error al introducir la opcion");
-						System.out.println("Asegurese de no dejar en blanco el campo\n");
-
-						ejecucion = true;
+					case 2:
+						Menu.menuGestionEspectaculo();
 
 						break;
-
-					}
 					default:
-						System.out.println("Opcion Invalida, solo se admite Y o N. \n");
-
-						ejecucion = true;
-
+						break;
 					}
 					break;
-
-				case 1:
-					Metodos.consumirLinea(sc);
-
-					Menu.menuGestionUsuario();
-
-					break;
-
-				case 2:
-					Metodos.consumirLinea(sc);
-
-					Menu.menuGestionEspectaculo();
-
-					break;
-				default:
-					break;
+				} catch (NumberFormatException e) {
+					System.out.println("Error al introducir una opcion, introduzca entradas validas");
 				}
-				break;
 
 			case ARTISTA:
-				Menu.menuArtistaInicial();
+				System.out.println("\nSesion actual: " + nuevaSesion.getPerfil() + "\n");
 
-				int opcionArtista = sc.nextInt();
+				String opcionArtista = Menu.menuArtistaInicial();
 
-				switch (opcionArtista) {
+				int opcArtInt = Integer.parseInt(opcionArtista);
+
+				switch (opcArtInt) {
 				case 0:
-					System.out.println("Desea cerrar la sesion? Y para si, N para no");
-
-					String opcionSalir = sc.nextLine().toUpperCase().trim();
-
-					switch (opcionSalir.toUpperCase()) {
-					case "si": {
-						nuevaSesion.setNombre("Invitado");
-						nuevaSesion.setPerfil(Perfil.INVITADO);
-
-						ejecucion = true;
-
-						break;
-
-					}
-					case "no": {
-						ejecucion = true;
-
-						break;
-
-					}
-					case " ": {
-						System.err.println("Error al introducir la opcion");
-						System.out.println("Asegurese de no dejar en blanco el campo\n");
-
-						ejecucion = true;
-
-						break;
-
-					}
-					default:
-						System.out.println("Opcion Invalida, solo se admite Y o N. \n");
-
-						ejecucion = true;
-
-					}
+					Menu.cerrarSesion();
 					break;
 
 				case 1:
@@ -194,124 +181,102 @@ public class Principal extends Menu {
 				break;
 
 			case COORDINACION:
-				Menu.menuCoordinacionInicial();
+				System.out.println("\nSesion actual: " + nuevaSesion.getPerfil() + "\n");
+				String opcionCoord = Menu.menuCoordinacionInicial();
 
-				int opcionCoord = sc.nextInt();
+				int opcCooInt = Integer.parseInt(opcionCoord);
 
-				switch (opcionCoord) {
+				switch (opcCooInt) {
 				case 0:
-					System.out.println("Desea cerrar la sesion? Y para si, N para no");
 
-					String opcionSalir = sc.nextLine().toUpperCase().trim();
-
-					switch (opcionSalir.toUpperCase()) {
-					case "SI": {
-						nuevaSesion.setNombre("Invitado");
-						nuevaSesion.setPerfil(Perfil.INVITADO);
-
-						ejecucion = true;
-
-						break;
-
-					}
-					case "NO": {
-						ejecucion = true;
-
-						break;
-
-					}
-					case " ": {
-						System.err.println("Error al introducir la opcion");
-						System.out.println("Asegurese de no dejar en blanco el campo\n");
-
-						ejecucion = true;
-
-						break;
-
-					}
-					default:
-						System.out.println("Opcion Invalida, solo se admite Y o N. \n");
-
-						ejecucion = true;
-
-					}
 					break;
 
 				default:
 					break;
 
 				case 1:
-					System.out.println();
-
 					Menu.menuGestionEspectaculo();
 
-					int opcionGestion = sc.nextInt();
-					switch (opcionGestion) {
+					int opcionGestionEsp = sc.nextInt();
+
+					switch (opcionGestionEsp) {
 					case 1:
-						System.out.println("Introduzca un nombre para el espectaculo entre 1 y 25 caracteres:");
-
-						String nombreEspectaculo = sc.nextLine().trim();
-
-						System.out.println("Introduzca la fecha de inicio del espectaculo");
-
-						String fechaInicial = sc.nextLine().trim();
-
-						System.out.println("Introduzca la fecha final del espectaculo");
-
-						String fechaFinal = sc.nextLine().trim();
+						Menu.pedirNombreEspectaculo();
+						Menu.pedirFechaInicio();
+						Menu.pedirFechaFin();
 
 						break;
 
 					case 2:
 						System.out.println("Lista de espectaculos:");
-						System.out.println("Introduzca el id del espectaculo buscado:");
+						String opcionEditarEspectaculo = Menu.menuEditarEspectaculo();
 
-						String id_espectaculo = sc.nextLine();
-						
-						System.out.println("Seleccione el campo que desee editar");
-						System.out.println("1. Nombre");
-						System.out.println("2. Fecha inicial");
-						System.out.println("3. Fecha fin");
-						System.out.println("4. Coordinador del espectaculo");
-						System.out.println("0. Cancelar");
+						int opcEdiEspInt = Integer.parseInt(opcionEditarEspectaculo);
+
+						switch (opcEdiEspInt) {
+						case 0:
+
+							break;
+						case 1:
+
+							break;
+
+						case 2:
+
+							break;
+
+						case 3:
+
+							break;
+
+						case 4:
+
+							break;
+
+						default:
+							break;
+						}
 						break;
 
 					case 3:
-						System.out.println("Introduzca un nombre para el numero entre 1 y 25 caracteres:");
-
-						String nombreNumero = sc.nextLine().trim();
-
-						System.out.println("Introduzca la fecha de inicio del espectaculo");
-
-						String duracion = sc.nextLine().trim();
-
-						System.out.println("Introduzca la fecha final del espectaculo");
-
-						int orden = sc.nextInt();
 
 						break;
 
 					case 4:
 						System.out.println("Lista de numeros existentes:");
-						System.out.println("Introduzca el id del numero buscado:");
-						
-						String id_numero = sc.nextLine();
-						
-						System.out.println("Seleccione el campo que desee editar");
-						System.out.println("1. Nombre");
-						System.out.println("2. Duracion");
-						System.out.println("3. Orden");
-						System.out.println("4. Espectaculo");
-						System.out.println("0. Cancelar");
-						
+
+						String opcionEditarNumero = Menu.menuEditarNumero();
+
+						int opcEdiNumInt = Integer.parseInt(opcionEditarNumero);
+
+						switch (opcEdiNumInt) {
+						case 0:
+
+							break;
+						case 1:
+
+							break;
+
+						case 2:
+
+							break;
+
+						case 3:
+
+							break;
+
+						case 4:
+
+							break;
+
+						default:
+							break;
+						}
+
 						break;
 
 					case 5:
-						System.out.println("Introduzca el id de la persona");
-						
-						String id_artista = sc.nextLine();
-						
-						
+
 						break;
 
 					default:
@@ -326,7 +291,6 @@ public class Principal extends Menu {
 				break;
 			}
 		} while (ejecucion);
-
+		sc.close();
 	}
-
 }

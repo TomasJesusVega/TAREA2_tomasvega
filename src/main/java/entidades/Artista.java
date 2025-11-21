@@ -19,6 +19,12 @@ public class Artista {
 		this.especialidades = especialidades;
 	}
 
+	public Artista(String apodo, Set<Especialidad> especialidades) {
+		super();
+		this.apodo = apodo;
+		this.especialidades = especialidades;
+	}
+
 	public Long getIdArtista() {
 		return idArtista;
 	}
