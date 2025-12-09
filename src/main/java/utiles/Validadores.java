@@ -11,32 +11,9 @@ import vista.Menu;
 
 public class Validadores {
 	static Scanner sc = new Scanner(System.in);
-	public static String validarEmail() {
-		String email = Menu.pedirEmail();
-		if (email.isEmpty() && email.matches("^^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
-			return email;
-		} else {
-			return null;
-		}
-	}
+	
 
-	public static String validarNombreReal() {
-		String nombreReal = Menu.pedirNombreReal();
-		if (!nombreReal.isEmpty() && nombreReal.matches("^[a-zA-Z ]+$")) {
-			return nombreReal;
-		} else {
-			return null;
-		}
-	}
-
-	public static String validarNacionalidad() {
-		String nacionalidad = Menu.pedirNacionalidad();
-		if (!nacionalidad.isEmpty() && nacionalidad.matches("^[\\p{L}\\p{N}\\s'\\-\\.]+$")) {
-			return nacionalidad;
-		} else {
-			return null;
-		}
-	}
+	
 
 	public static String validarApodo() {
 		String apodo = Menu.pedirApodo();
@@ -47,21 +24,7 @@ public class Validadores {
 		}		
 	}
 
-	public static Perfil validarPerfilPersona() {
-	    String perfil = Menu.pedirPerfil();
-
-	    if (perfil == null || perfil.isEmpty()) return null;
-
-	    try {
-	        Perfil p = Perfil.valueOf(perfil.toUpperCase());
-	        if (p == Perfil.COORDINACION || p == Perfil.ARTISTA) {
-	            return p;
-	        }
-	        return null;
-	    } catch (IllegalArgumentException ex) {
-	        return null;
-	    }
-	}
+	
 
 	public static String validarEspecialidad() {
 		String especialidad = Menu.pedirEspecialidad();

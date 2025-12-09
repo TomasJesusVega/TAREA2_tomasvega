@@ -19,10 +19,8 @@ public class Credenciales {
 	}
 
 	
-	public Credenciales(String nombre, String contrasenia, Perfil perfil) {
-		super();
+	public Credenciales(String nombre, Perfil perfil) {
 		this.nombre = nombre;
-		this.contrasenia = contrasenia;
 		this.perfil = perfil;
 	}
 

@@ -27,22 +27,19 @@ public class Espectaculo {
 		this.numeros = numeros;
 	}
 
-	public Espectaculo(Long id, String nombre, LocalDate fechaini, LocalDate fechafin) {
-		super();
+	public Espectaculo(Long id, String nombre, LocalDate fechaini, LocalDate fechafin, Long idCoord) {
 		this.id = id;
 		this.nombre = nombre;
 		this.fechaini = fechaini;
 		this.fechafin = fechafin;
+		this.idCoord = idCoord;
 	}
 	
-	
-
-	public Espectaculo(String nombre, LocalDate fechaini, LocalDate fechafin, Set<Numero> numeros) {
-		super();
+	public Espectaculo(Long id, String nombre, LocalDate fechaini, LocalDate fechafin) {
+		this.id = id;
 		this.nombre = nombre;
 		this.fechaini = fechaini;
 		this.fechafin = fechafin;
-		this.numeros = numeros;
 	}
 
 	public Long getId() {

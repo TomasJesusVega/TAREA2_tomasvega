@@ -16,18 +16,14 @@ public class CargarProperties {
 	}
 	
 	public static String getUrlBdd() {
-		return propiedad.getProperty("urlBdd");
-		
+		return propiedad.getProperty("urlBdd");		
 	}
 	
 	public static String getUsuarioBdd() {
-		return propiedad.getProperty("usuarioBdd");
-		
-	}
-	
+		return propiedad.getProperty("usuarioBdd");	
+	}	
 	public static String getContaseniaBdd() {
-		return propiedad.getProperty("contraseniaBdd");
-		
+		return propiedad.getProperty("contraseniaBdd");		
 	}
 	
 	public static String getUsuarioAdmin() {

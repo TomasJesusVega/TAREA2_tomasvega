@@ -7,24 +7,22 @@ import java.sql.SQLException;
 public class ConexionBDD {
 	private static Connection conexion = null;
 	
-	public static Connection nuevaConexion() {
+	public Connection nuevaConexion() {
 		if (conexion == null) {
 			CargarProperties.cargarPropiedades();
 			String URL = CargarProperties.getUrlBdd();
 			String USUARIO = CargarProperties.getUsuarioBdd();
 			String CONTRASENIA = CargarProperties.getContaseniaBdd();
-			
 			try {
 				conexion = DriverManager.getConnection(URL, USUARIO, CONTRASENIA);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			
 		}
 		return conexion;
 	}
 	
-	public static void cerrarConexion() {
+	public void cerrarConexion() {
 		if (conexion != null) {
 			try {
 				conexion.close();

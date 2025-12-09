@@ -13,92 +13,99 @@ import entidades.Sesion;
 import utiles.ConexionBDD;
 
 public class UsuarioDAO {
-	private Connection conexion;
-	
-    public Sesion comprobarCredenciales(String nombreUsuario, String contrasenia) {
-        conexion = ConexionBDD.nuevaConexion();
-        
-        String selectCredenciales = "SELECT * FROM usuario WHERE nombre_usuario = ? AND contrasenia = ?";
-        
-        try {
-        	PreparedStatement pstmt = conexion.prepareStatement(selectCredenciales);
-        	
-            pstmt.setString(1, nombreUsuario);
-            pstmt.setString(2, contrasenia);
-            
-            ResultSet rs = pstmt.executeQuery();
-            
-            if (rs.next()) {
-                return new Sesion(String.valueOf(rs.getString("perfil")), Perfil.valueOf(rs.getString("perfil").toUpperCase()));
-            } else {
-            	return null;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-          
-        } finally {
-        	ConexionBDD.cerrarConexion();
+	private ConexionBDD conexionBDD;
+
+	public UsuarioDAO(ConexionBDD conexionBDD) {
+		this.conexionBDD = conexionBDD;
+	}
+
+	public Credenciales comprobarCredenciales(String nombreUsuario, String contrasenia) {
+		Connection conexion = null;
+		String selectCredenciales = "SELECT * FROM usuario WHERE nombre_usuario = ? AND contrasenia = ?";
+		try {
+			conexion = conexionBDD.nuevaConexion();
+
+			PreparedStatement pstmt = conexion.prepareStatement(selectCredenciales);
+
+			pstmt.setString(1, nombreUsuario);
+			pstmt.setString(2, contrasenia);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				return new Credenciales(String.valueOf(rs.getString("perfil")),
+						Perfil.valueOf(rs.getString("perfil").toUpperCase()));
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (conexion != null) {
+				conexionBDD.cerrarConexion();
+			}
 		}
-        return null;
-    }
+		return null;
+	}
 
-    public boolean unicidadNombreUsuario(String nombreUsuario) {
-        conexion = ConexionBDD.nuevaConexion();
-        
-        String selectNombreUsuario = "SELECT id FROM usuario WHERE nombre_usuario = ?";
+	public boolean unicidadNombreUsuario(String nombreUsuario) {
+		Connection conexion = null;
+		String selectNombreUsuario = "SELECT id FROM usuario WHERE nombre_usuario = ?";
+		try {
+			conexion = conexionBDD.nuevaConexion();
+			PreparedStatement stmt = conexion.prepareStatement(selectNombreUsuario);
+			stmt.setString(1, nombreUsuario);
 
-        try (PreparedStatement stmt = conexion.prepareStatement(selectNombreUsuario)) {
-            stmt.setString(1, nombreUsuario);
-            
-            ResultSet rs = stmt.executeQuery();
-            
-            return rs.next();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
-    }
+			ResultSet rs = stmt.executeQuery();
 
-    public void insertarPersonaYCredenciales(Persona persona, Credenciales cred) {
-        conexion = ConexionBDD.nuevaConexion();
+			return rs.next();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
 
-        try {
+	public void insertarPersonaYCredenciales(Persona persona, Credenciales cred) {
+		Connection conexion = null;
+		try {
 			conexion.setAutoCommit(false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-        try {
-            // insertar persona
-            String insertPersona = "INSERT INTO persona(nombre_real, email, nacionalidad) VALUES (?, ?, ?)";
-            PreparedStatement pstmtPersona = conexion.prepareStatement(insertPersona, Statement.RETURN_GENERATED_KEYS);
+		try {
+			conexion = conexionBDD.nuevaConexion();
 
-            pstmtPersona.setString(1, persona.getNombre());
-            pstmtPersona.setString(2, persona.getEmail());
-            pstmtPersona.setString(3, persona.getNacionalidad());
-            pstmtPersona.executeUpdate();
+			String insertPersona = "INSERT INTO persona(nombre_real, email, nacionalidad) VALUES (?, ?, ?)";
+			PreparedStatement pstmtPersona = conexion.prepareStatement(insertPersona, Statement.RETURN_GENERATED_KEYS);
 
-            ResultSet rs = pstmtPersona.getGeneratedKeys();
-            rs.next();
-            long personaId = rs.getLong(1);
+			pstmtPersona.setString(1, persona.getNombre());
+			pstmtPersona.setString(2, persona.getEmail());
+			pstmtPersona.setString(3, persona.getNacionalidad());
+			pstmtPersona.executeUpdate();
 
-            String insertCredenciales = "INSERT INTO credenciales(nombre_usuario, contrasenia, perfil, persona_id) VALUES (?, ?, ?, ?)";
-            PreparedStatement pstmtCredenciales = conexion.prepareStatement(insertCredenciales);
+			ResultSet rs = pstmtPersona.getGeneratedKeys();
+			rs.next();
+			long personaId = rs.getLong(1);
 
-            pstmtCredenciales.setString(1, cred.getNombre());
-            pstmtCredenciales.setString(2, cred.getContrasenia());
-            pstmtCredenciales.setString(3, cred.getPerfil().toString());
-            pstmtCredenciales.setLong(4, personaId);
-            pstmtCredenciales.executeUpdate();
+			String insertCredenciales = "INSERT INTO credenciales(nombre_usuario, contrasenia, perfil, persona_id) VALUES (?, ?, ?, ?)";
+			PreparedStatement pstmtCredenciales = conexion.prepareStatement(insertCredenciales);
 
-            conexion.commit();
+			pstmtCredenciales.setString(1, cred.getNombre());
+			pstmtCredenciales.setString(2, cred.getContrasenia());
+			pstmtCredenciales.setString(3, cred.getPerfil().toString());
+			pstmtCredenciales.setLong(4, personaId);
+			pstmtCredenciales.executeUpdate();
 
-        } catch (SQLException e) {
-        	try {
+			conexion.commit();
+
+		} catch (SQLException e) {
+			try {
 				conexion.rollback();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
-        }
-    }
+		}
+	}
+
 }

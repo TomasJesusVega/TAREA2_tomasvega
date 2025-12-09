@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-11-2025 a las 20:53:53
+-- Tiempo de generación: 24-11-2025 a las 14:14:14
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `circo_tomasvega`
 --
+CREATE DATABASE IF NOT EXISTS `circo_tomasvega` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `circo_tomasvega`;
 
 -- --------------------------------------------------------
 
@@ -33,16 +35,13 @@ CREATE TABLE `artista` (
   `id_usuario` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Estructura de tabla para la tabla `artistanumero`
+-- Volcado de datos para la tabla `artista`
 --
 
-CREATE TABLE `artistanumero` (
-  `id_numero` bigint(20) NOT NULL,
-  `id_artista` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `artista` (`id_artista`, `apodo`, `id_usuario`) VALUES
+(1, 'AcrroLuis', 1),
+(2, NULL, 2);
 
 -- --------------------------------------------------------
 
@@ -54,6 +53,38 @@ CREATE TABLE `artistaespecialidad` (
   `id_artista` bigint(20) NOT NULL,
   `especialidades` enum('ACROBACIA','HUMOR','MALABARISMO','EQUILIBRISMO','MAGIA') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `artistaespecialidad`
+--
+
+INSERT INTO `artistaespecialidad` (`id_artista`, `especialidades`) VALUES
+(1, 'ACROBACIA'),
+(1, 'MAGIA'),
+(2, 'HUMOR');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `artistanumero`
+--
+
+CREATE TABLE `artistanumero` (
+  `id_numero` bigint(20) NOT NULL,
+  `id_artista` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `artistanumero`
+--
+
+INSERT INTO `artistanumero` (`id_numero`, `id_artista`) VALUES
+(1, 1),
+(2, 1),
+(3, 1),
+(4, 1),
+(5, 1),
+(6, 2);
 
 -- --------------------------------------------------------
 
@@ -67,6 +98,14 @@ CREATE TABLE `coordinacion` (
   `fecha_inicio_senior` date DEFAULT NULL,
   `id_usuario` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `coordinacion`
+--
+
+INSERT INTO `coordinacion` (`id_coordinacion`, `es_senior`, `fecha_inicio_senior`, `id_usuario`) VALUES
+(1, 1, '2018-01-01', 3),
+(2, 0, NULL, 4);
 
 -- --------------------------------------------------------
 
@@ -82,6 +121,14 @@ CREATE TABLE `espectaculo` (
   `id_coordinacion` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `espectaculo`
+--
+
+INSERT INTO `espectaculo` (`id_espectaculo`, `nombre_espectaculo`, `fecha_inicio`, `fecha_fin`, `id_coordinacion`) VALUES
+(1, 'Circo Fantasía', '2025-01-01', '2025-02-01', 1),
+(2, 'Noche Estelar', '2025-03-01', '2025-04-01', 2);
+
 -- --------------------------------------------------------
 
 --
@@ -91,10 +138,22 @@ CREATE TABLE `espectaculo` (
 CREATE TABLE `numero` (
   `id_numero` bigint(20) NOT NULL,
   `nombre_numero` varchar(40) NOT NULL,
-  `orden` int NOT NULL,
+  `orden` int(11) NOT NULL,
   `duracion` double NOT NULL,
   `id_espectaculo` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `numero`
+--
+
+INSERT INTO `numero` (`id_numero`, `nombre_numero`, `orden`, `duracion`, `id_espectaculo`) VALUES
+(1, 'Acróbatas del Aire', 1, 12.5, 1),
+(2, 'Magia Ilusoria', 2, 10, 1),
+(3, 'Payasos en Escena', 3, 8, 1),
+(4, 'Luz y Sombras', 1, 14, 2),
+(5, 'Equilibristas del Vértigo', 2, 11, 2),
+(6, 'Risas Nocturnas', 3, 9, 2);
 
 -- --------------------------------------------------------
 
@@ -109,8 +168,18 @@ CREATE TABLE `usuario` (
   `nombre_real` varchar(20) NOT NULL,
   `email` varchar(40) NOT NULL,
   `nacionalidad` varchar(20) NOT NULL,
-  `perfil` enum('ARTISTA','COORDINACION') DEFAULT NULL
+  `perfil` enum('ARTISTA','COORDINACION') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario` (`id_usuario`, `nombre_usuario`, `contrasenia`, `nombre_real`, `email`, `nacionalidad`, `perfil`) VALUES
+(1, 'artistaA', 'pass1', 'Luis Ortega', 'luis.ortega@example.com', 'España', 'ARTISTA'),
+(2, 'artistaB', 'pass2', 'Marta Rios', 'marta.rios@example.com', 'México', 'ARTISTA'),
+(3, 'coordA', 'pass10', 'Sonia Vidal', 'sonia.vidal@example.com', 'España', 'COORDINACION'),
+(4, 'coordB', 'pass11', 'Ernesto Díaz', 'ernesto.diaz@example.com', 'Argentina', 'COORDINACION');
 
 --
 -- Índices para tablas volcadas
@@ -121,50 +190,51 @@ CREATE TABLE `usuario` (
 --
 ALTER TABLE `artista`
   ADD PRIMARY KEY (`id_artista`),
-  ADD KEY `id_usuario_FK` (`id_usuario`);
+  ADD KEY `fk_artista_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `artistaespecialidad`
+--
+ALTER TABLE `artistaespecialidad`
+  ADD PRIMARY KEY (`id_artista`,`especialidades`);
 
 --
 -- Indices de la tabla `artistanumero`
 --
 ALTER TABLE `artistanumero`
-  ADD KEY `id_numeroartista_FK` (`id_numero`),
-  ADD KEY `id_artistanumero_FK` (`id_artista`);
+  ADD PRIMARY KEY (`id_numero`,`id_artista`),
+  ADD KEY `fk_artistanumero_artista` (`id_artista`);
 
---
--- Indices de la tabla `artistanumero`
---
-ALTER TABLE `artistaespecialidad`
-  ADD KEY `id_artistaespecialidad_FK` (`id_artista`);
 --
 -- Indices de la tabla `coordinacion`
 --
 ALTER TABLE `coordinacion`
   ADD PRIMARY KEY (`id_coordinacion`),
-  ADD KEY `usuario_coord_FK` (`id_usuario`);
+  ADD KEY `fk_coordinacion_usuario` (`id_usuario`);
 
 --
 -- Indices de la tabla `espectaculo`
 --
 ALTER TABLE `espectaculo`
   ADD PRIMARY KEY (`id_espectaculo`),
-  ADD UNIQUE KEY `id_espectaculo_UQ` (`nombre_espectaculo`),
-  ADD KEY `id_coordinador_FK` (`id_coordinacion`);
-  
+  ADD UNIQUE KEY `nombre_espectaculo` (`nombre_espectaculo`),
+  ADD KEY `fk_espectaculo_coordinacion` (`id_coordinacion`);
 
 --
 -- Indices de la tabla `numero`
 --
 ALTER TABLE `numero`
   ADD PRIMARY KEY (`id_numero`),
-  ADD UNIQUE KEY `nombre_numero_UQ` (`nombre_numero`),
-  ADD KEY `id_espectaculo_FK` (`id_espectaculo`);
+  ADD UNIQUE KEY `nombre_numero` (`nombre_numero`),
+  ADD KEY `fk_numero_espectaculo` (`id_espectaculo`);
+
 --
 -- Indices de la tabla `usuario`
 --
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`id_usuario`),
-  ADD UNIQUE KEY `nombre_usuario_UQ` (`nombre_usuario`),
-  ADD UNIQUE KEY `email_UQ` (`email`);
+  ADD UNIQUE KEY `nombre_usuario` (`nombre_usuario`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -174,31 +244,31 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `artista`
 --
 ALTER TABLE `artista`
-  MODIFY `id_artista` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_artista` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `coordinacion`
 --
 ALTER TABLE `coordinacion`
-  MODIFY `id_coordinacion` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_coordinacion` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `espectaculo`
 --
 ALTER TABLE `espectaculo`
-  MODIFY `id_espectaculo` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_espectaculo` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `numero`
 --
 ALTER TABLE `numero`
-  MODIFY `id_numero` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_numero` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_usuario` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Restricciones para tablas volcadas
@@ -208,38 +278,38 @@ ALTER TABLE `usuario`
 -- Filtros para la tabla `artista`
 --
 ALTER TABLE `artista`
-  ADD CONSTRAINT `id_usuario_FK` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
-
---
--- Filtros para la tabla `artistanumero`
---
-ALTER TABLE `artistanumero`
-  ADD CONSTRAINT `id_artistanumero_FK` FOREIGN KEY (`id_artista`) REFERENCES `artista` (`id_artista`),
-  ADD CONSTRAINT `id_numeroartista_FK` FOREIGN KEY (`id_numero`) REFERENCES `numero` (`id_numero`);
+  ADD CONSTRAINT `fk_artista_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `artistaespecialidad`
 --
 ALTER TABLE `artistaespecialidad`
-  ADD CONSTRAINT `id_artistaespecialidad_FK` FOREIGN KEY (`id_artista`) REFERENCES `artista` (`id_artista`);
+  ADD CONSTRAINT `fk_artistaespecialidad_artista` FOREIGN KEY (`id_artista`) REFERENCES `artista` (`id_artista`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `artistanumero`
+--
+ALTER TABLE `artistanumero`
+  ADD CONSTRAINT `fk_artistanumero_artista` FOREIGN KEY (`id_artista`) REFERENCES `artista` (`id_artista`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_artistanumero_numero` FOREIGN KEY (`id_numero`) REFERENCES `numero` (`id_numero`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 --
 -- Filtros para la tabla `coordinacion`
 --
 ALTER TABLE `coordinacion`
-  ADD CONSTRAINT `usuario_coord_FK` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
+  ADD CONSTRAINT `fk_coordinacion_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `espectaculo`
 --
 ALTER TABLE `espectaculo`
-  ADD CONSTRAINT `id_coordinador_FK` FOREIGN KEY (`id_coordinacion`) REFERENCES `coordinacion` (`id_coordinacion`);
-COMMIT;
+  ADD CONSTRAINT `fk_espectaculo_coordinacion` FOREIGN KEY (`id_coordinacion`) REFERENCES `coordinacion` (`id_coordinacion`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `numero`
 --
 ALTER TABLE `numero`
-  ADD CONSTRAINT `id_espectaculo_FK` FOREIGN KEY (`id_espectaculo`) REFERENCES `espectaculo` (`id_espectaculo`);
+  ADD CONSTRAINT `fk_numero_espectaculo` FOREIGN KEY (`id_espectaculo`) REFERENCES `espectaculo` (`id_espectaculo`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

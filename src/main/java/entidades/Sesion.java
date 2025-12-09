@@ -3,8 +3,8 @@ package entidades;
 
 public class Sesion {
 
-	private String nombre;
-	private Perfil perfil;
+	private String nombre = "Invitado";
+	private Perfil perfil = Perfil.INVITADO;
 
 	public Sesion() {
 		super();

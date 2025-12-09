@@ -14,74 +14,68 @@ import entidades.Espectaculo;
 import utiles.ConexionBDD;
 
 public class EspectaculoDAO {
+	private ConexionBDD conexionBDD;
 
-    // INSERTAR ESPECTÁCULO
-    public static Long insertarEspectaculo(Espectaculo esp) {
+	public EspectaculoDAO(ConexionBDD conexionBDD) {
+		this.conexionBDD = conexionBDD;
+	}
 
-        String sql = "INSERT INTO espectaculo(nombre_espectaculo, fecha_inicio, fecha_fin, id_coordinacion) " +
-                     "VALUES (?, ?, ?, ?)";
+	public List<Espectaculo> consultarEspectaculosBasico() {
+		Connection conexion = null;
+		
+		List<Espectaculo> lista = new ArrayList<>();
 
-        try (Connection con = ConexionBDD.nuevaConexion();
-             PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+		String selectEspectaculo = "SELECT id_espectaculo, nombre_espectaculo, fecha_inicio, fecha_fin, id_coordinacion FROM espectaculo";
 
-            stmt.setString(1, esp.getNombre());
-            stmt.setDate(2, Date.valueOf(esp.getFechaini()));
-            stmt.setDate(3, Date.valueOf(esp.getFechafin()));
+		try {
+			conexion = conexionBDD.nuevaConexion();
+			
+			PreparedStatement stmt = conexion.prepareStatement(selectEspectaculo);
+			ResultSet rs = stmt.executeQuery();
 
-            // puede ser null
-            if (esp.getIdCoord() != null) 
-                stmt.setLong(4, esp.getIdCoord());
-            else 
-                stmt.setNull(4, Types.BIGINT);
+			while (rs.next()) {
+				Espectaculo esp = new Espectaculo(rs.getLong("id_espectaculo"), rs.getString("nombre_espectaculo"), rs.getDate("fecha_inicio").toLocalDate(), rs.getDate("fecha_fin").toLocalDate());
+				lista.add(esp);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
-            stmt.executeUpdate();
+		return lista;
+	}
+//    public static Long insertarEspectaculo(Espectaculo esp) {
+//
+//        String sql = "INSERT INTO espectaculo(nombre_espectaculo, fecha_inicio, fecha_fin, id_coordinacion) " +
+//                     "VALUES (?, ?, ?, ?)";
+//
+//        try (Connection con = ;
+//             PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+//
+//            stmt.setString(1, esp.getNombre());
+//            stmt.setDate(2, Date.valueOf(esp.getFechaini()));
+//            stmt.setDate(3, Date.valueOf(esp.getFechafin()));
+//
+//            // puede ser null
+//            if (esp.getIdCoord() != null) 
+//                stmt.setLong(4, esp.getIdCoord());
+//            else 
+//                stmt.setNull(4, Types.BIGINT);
+//
+//            stmt.executeUpdate();
+//
+//            ResultSet rs = stmt.getGeneratedKeys();
+//            if (rs.next()) {
+//                Long idGenerado = rs.getLong(1);
+//                esp.setId(idGenerado);
+//                return idGenerado;
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return null;
+//    }
+//
 
-            ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()) {
-                Long idGenerado = rs.getLong(1);
-                esp.setId(idGenerado);
-                return idGenerado;
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    // LISTAR TODOS LOS ESPECTÁCULOS
-    public static List<Espectaculo> consultarEspectaculos() {
-
-        List<Espectaculo> lista = new ArrayList<>();
-
-        String sql = "SELECT id_espectaculo, nombre_espectaculo, fecha_inicio, fecha_fin, id_coordinacion " +
-                     "FROM espectaculo";
-
-        try (Connection con = ConexionBDD.nuevaConexion();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-
-                Espectaculo esp = new Espectaculo(
-                    rs.getLong("id_espectaculo"),
-                    rs.getString("nombre_espectaculo"),
-                    rs.getDate("fecha_inicio").toLocalDate(),
-                    rs.getDate("fecha_fin").toLocalDate()
-                );
-
-                esp.setIdCoord(rs.getLong("id_coordinacion"));
-
-                lista.add(esp);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return lista;
-    }
 }
-
