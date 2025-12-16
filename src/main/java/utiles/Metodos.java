@@ -9,5 +9,4 @@ public class Metodos {
 		return Integer.parseInt(opcion);
 	}
 	
-	
 }

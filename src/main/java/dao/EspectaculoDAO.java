@@ -43,6 +43,9 @@ public class EspectaculoDAO {
 
 		return lista;
 	}
+
+}
+
 //    public static Long insertarEspectaculo(Espectaculo esp) {
 //
 //        String sql = "INSERT INTO espectaculo(nombre_espectaculo, fecha_inicio, fecha_fin, id_coordinacion) " +
@@ -77,5 +80,3 @@ public class EspectaculoDAO {
 //        return null;
 //    }
 //
-
-}

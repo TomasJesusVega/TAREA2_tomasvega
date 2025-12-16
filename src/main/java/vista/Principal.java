@@ -5,14 +5,10 @@ import java.util.Scanner;
 
 import controller.EspectaculoController;
 import controller.UsuarioController;
-import dao.EspectaculoDAO;
-import dao.UsuarioDAO;
+import controller.ValoracionController;
 import entidades.Espectaculo;
 import entidades.Perfil;
 import entidades.Sesion;
-import service.EspectaculoService;
-import service.UsuarioService;
-import utiles.ConexionBDD;
 import utiles.Metodos;
 
 public class Principal {
@@ -20,29 +16,27 @@ public class Principal {
 		Scanner sc = new Scanner(System.in);
 
 		Sesion nuevaSesion = new Sesion();
-		ConexionBDD conexionBDD = new ConexionBDD();
 
-		UsuarioDAO usuarioDAO = new UsuarioDAO(conexionBDD);
-		UsuarioService usuarioService = new UsuarioService(usuarioDAO);
-		UsuarioController usuarioController = new UsuarioController(nuevaSesion, usuarioService);
+		UsuarioController usuarioController = new UsuarioController();
+		
+		EspectaculoController espectaculoController = new EspectaculoController();
 
-		EspectaculoDAO espectaculoDAO = new EspectaculoDAO(conexionBDD);
-		EspectaculoService espectaculoService = new EspectaculoService(espectaculoDAO);
-		EspectaculoController espectaculoController = new EspectaculoController(espectaculoService);
-
+		ValoracionController valoracionController = new ValoracionController();
+		
 		boolean ejecucion = true;
 
 		System.out.println("============================================\n");
 		System.out.println("	Programa de gestion de circo\n\n");
 		System.out.println("	Por Tomas Jesus Vega Leiva\n");
 		System.out.println("============================================\n");
+		
 		do {
 			switch (nuevaSesion.getPerfil()) {
 			case INVITADO:
 				do {
 					System.out.println("\nSesion actual: " + nuevaSesion.getPerfil()
 							+ "\n\nIntroduzca el numero al lado de la opcion para seleccionarla\n" + "1. Login\n"
-							+ "2. Ver espectaculos\n" + "0. Cerrar programa\n");
+							+ "2. Ver espectaculos\n" + "3. Registrarse como Socio\n" + "0. Cerrar programa\n");
 					try {
 						int opcionInvitado = Metodos.validarOpcion();
 						switch (opcionInvitado) {
@@ -63,6 +57,7 @@ public class Principal {
 								System.out.println("Error al introducir una opcion, introduzca valores validos");
 							}
 							break;
+							
 						case 1:
 							System.out.println("Introduzca su nombre de usuario:");
 							String nombreUsuario = sc.nextLine().trim();
@@ -75,6 +70,7 @@ public class Principal {
 								System.out.println("Error al iniciar sesion, intentelo de nuevo sif");
 							}
 							break;
+							
 						case 2:
 							System.out.println("Lista de espectaculos");
 							List<Espectaculo> listaEspectaculosBasica = espectaculoController.listarEspectaculos();
@@ -83,6 +79,45 @@ public class Principal {
 										+ " | Inicio: " + esp.getFechaini() + " | Fin: " + esp.getFechafin());
 							}
 							break;
+						
+						case 3:
+							System.out.println("Registro como socio");
+							System.out.println("Introduzca su nombre real: ");
+							String nombreReal = sc.nextLine().trim();
+							if (!usuarioController.validarNombreReal(nombreReal)) {
+								System.out.println("Caracteres invalidos, interrumpiendo proceso de registro");
+								break;
+							}
+
+							System.out.println("Introduzca su email: ");
+							String email = sc.nextLine().trim();
+							if (!usuarioController.validarEmail(email)) {
+								System.out.println("Caracteres invalidos, interrumpiendo proceso de registro");
+								break;
+							}
+
+							System.out.println("Introduzca su nacionalidad: ");
+							String nacionalidad = sc.nextLine().trim();
+							if (!usuarioController.validarNacionalidad(nacionalidad)) {
+								System.out.println("Caracteres invalidos, interrumpiendo proceso de registro");
+								break;
+							}
+							
+							System.out.println("Introduzca su nombre de usuario: ");
+							nombreUsuario = sc.nextLine().trim();
+							if (!usuarioController.validarNombreUsuario(nombreUsuario)) {
+								System.out.println("Caracteres invalidos, interrumpiendo proceso de registro");
+								break;
+							}
+							
+							System.out.println("Introduzca su contrasenia para el usuario: ");
+							contrasenia = sc.nextLine().trim();
+							if (!usuarioController.validarContrasenia(contrasenia)) {
+								System.out.println("Caracteres invalidos, interrumpiendo proceso de registro");
+								break;
+							}
+							break;
+							
 						default:
 							System.out.println("Error al introducir una opcion, introduzca valores validos");
 						}
@@ -92,6 +127,44 @@ public class Principal {
 						System.out.println("Error al introducir una opcion, introduzca valores validos");
 					}
 				} while (nuevaSesion.getPerfil().equals(Perfil.INVITADO));
+				break;
+			// nuevo perfil socio
+			case SOCIO:
+				do {
+					System.out.println("\nSesion actual: " + nuevaSesion.getPerfil() + "\n");
+					System.out.println("Introduzca el numero al lado de la opcion para seleccionarla\n"
+							+ "1. Valorar espectaculos\n" + "0. Logout");
+					int opcionSocio = Metodos.validarOpcion();
+					switch (opcionSocio) {
+					case 0:
+						usuarioController.cerrarSesion();
+						break;
+					case 1:
+						int contador = 0;
+						System.out.println("Lista de espectaculos");
+						List<Espectaculo> listaEspectaculosBasica = espectaculoController.listarEspectaculos();
+						for (Espectaculo esp : listaEspectaculosBasica) {
+							contador++;
+							System.out.println(contador + ". " + "ID: " + esp.getId() + " | Nombre: " + esp.getNombre()
+									+ " | Inicio: " + esp.getFechaini() + " | Fin: " + esp.getFechafin());
+						}
+						System.out.println("Seleccione el espectaculo");
+						System.out.println("Del 1 al 5, valore el espectaculo");
+						int nota = Metodos.validarOpcion();
+						if (!valoracionController.validarNota(nota)) {
+							System.out.println("Nota no valida, intente otra vez");
+						}
+						System.out.println("Introduzca un comentario sobre su experiencia en el espectaculo");
+						String comentario = sc.nextLine().trim();
+						if (!valoracionController.validarComentario(comentario)) {
+							System.out.println("Error, su comentario no puede ser menos de 10 caracteres ni mas de 100 caracteres");
+						}
+
+						break;
+					default:
+						break;
+					}
+				} while (nuevaSesion.getPerfil().equals(Perfil.SOCIO));
 				break;
 
 			case ADMIN:
@@ -127,11 +200,9 @@ public class Principal {
 						case 1:
 							System.out.println("Gestion de usuarios\n" + "1. Registrar usuario nuevo\n"
 									+ "2. Modificar usuario existente\n");
-							String opcionGestionUsuario = sc.nextLine().trim();
+							int opcionGestionUsuario = Metodos.validarOpcion();
 
-							int opcGesUsuInt = Integer.parseInt(opcionGestionUsuario);
-
-							switch (opcGesUsuInt) {
+							switch (opcionGestionUsuario) {
 							case 1:
 								System.out.println("Introduzca el nombre real: ");
 								String nombreReal = sc.nextLine().trim();
@@ -139,48 +210,62 @@ public class Principal {
 									System.out.println("Caracteres invalidos, interrumpiendo proceso de registro");
 									break;
 								}
-								
+
 								System.out.println("Introduzca el email: ");
 								String email = sc.nextLine().trim();
 								if (!usuarioController.validarEmail(email)) {
 									System.out.println("Caracteres invalidos, interrumpiendo proceso de registro");
 									break;
 								}
-								
+
 								System.out.println("Introduzca la nacionalidad: ");
 								String nacionalidad = sc.nextLine().trim();
 								if (!usuarioController.validarNacionalidad(nacionalidad)) {
 									System.out.println("Caracteres invalidos, interrumpiendo proceso de registro");
 									break;
 								}
-								
+
 								System.out.println("Introduzca el perfil: ");
 								String perfil = sc.nextLine().trim();
-								
 								if (usuarioController.validarPerfilPersona(perfil) == null) {
 									System.out.println("Caracteres invalidos, interrumpiendo proceso de registro");
 									break;
 								} else {
 									switch (perfil.toUpperCase()) {
 									case "ARTISTA":
-										
+										System.out.println("Tiene el/la artista apodo? si/no");
 										break;
 									case "COORDINACION":
+										System.out.println("Es el/la coordinador senior? si/no");
 										break;
 									default:
+										System.out.println("Opcion invalida");
 										break;
 									}
+								}
+
+								System.out.println("Introduzca el nombre de usuario: ");
+								String nombreUsuario = sc.nextLine().trim();
+								if (!usuarioController.validarNombreUsuario(nombreUsuario)) {
+									System.out.println("Caracteres invalidos, interrumpiendo proceso de registro");
+									break;
+								}
+								
+								System.out.println("Introduzca la contrasenia para el usuario: ");
+								String contrasenia = sc.nextLine().trim();
+								if (!usuarioController.validarContrasenia(contrasenia)) {
+									System.out.println("Caracteres invalidos, interrumpiendo proceso de registro");
+									break;
 								}
 
 								break;
 
 							default:
-								break;
+								System.out.println("Error default");
 							}
 							break;
 
 						case 2:
-							Menu.menuGestionEspectaculo();
 
 							break;
 						default:
@@ -247,153 +332,146 @@ public class Principal {
 
 			case COORDINACION:
 				do {
+					System.out.println("\nSesion actual: " + nuevaSesion.getPerfil() + "\n");
+					System.out.println("Introduzca el numero al lado de la opcion para seleccionarla"
+							+ "1. Gestionar Espectaculos" + "0. Logout");
 					try {
+						int opcionCoord = Metodos.validarOpcion();
+						switch (opcionCoord) {
+						case 0:
+							System.out.println("Desea cerrar la sesion? si/no");
+							String opcionCerrarSesion = sc.nextLine().toUpperCase().trim();
+							switch (opcionCerrarSesion) {
+							case "SI": {
+								nuevaSesion.setNombre("Invitado");
+								nuevaSesion.setPerfil(Perfil.INVITADO);
+								break;
+							}
+							case "NO": {
+								break;
+							}
+							case " ": {
+								System.err.println("Error al introducir la opcion");
+								System.out.println("Asegurese de no dejar en blanco el campo\n");
+								break;
+							}
+							default:
+								System.out.println("Opcion Invalida, solo se admite Y o N. \n");
+								break;
+							}
 
+						case 1:
+							System.out.println("Gestion de espectaculos\n" + "1. Crear espectaculo nuevo\n"
+									+ "2. Modificar espectaculo existente\n" + "3. Crear numero nuevo\n"
+									+ "4. Modificar numero existente\n" + "5. Asignar artista a numero existente\n"
+									+ "0. Cancelar Operacion\n");
+
+							int opcionGestionEsp = Metodos.validarOpcion();
+
+							switch (opcionGestionEsp) {
+							case 0:
+								usuarioController.cerrarSesion();
+								break;
+							case 1:
+								System.out.println("Introduzca un nombre para el espectaculo entre 1 y 25 caracteres:");
+								String nombreEspectaculo = sc.nextLine().trim();
+
+								System.out.println("Introduzca la fecha de inicio del espectaculo:");
+								String fechaInicial = sc.nextLine().trim();
+
+								System.out.println("Introduzca la fecha final del espectaculo:");
+								String fechaFinal = sc.nextLine();
+
+								break;
+
+							case 2:
+								System.out.println("Lista de espectaculos:\n" + "Seleccione el campo que desee editar\n"
+										+ "1. Nombre\n" + "2. Fecha inicial\n" + "3. Fecha fin"
+										+ "4. Coordinador del espectaculo\n" + "0. Cancelar\n");
+
+								int opcionEditarEspectaculo = Metodos.validarOpcion();
+
+								switch (opcionEditarEspectaculo) {
+								case 0:
+									System.out.println("Cancelando operacion");
+									break;
+									
+								case 1:
+
+									break;
+
+								case 2:
+
+									break;
+
+								case 3:
+
+									break;
+
+								case 4:
+
+									break;
+
+								default:
+									break;
+								}
+								break;
+
+							case 3:
+
+								break;
+
+							case 4:
+								System.out.println("Lista de numeros existentes:");
+								System.out.println("Seleccione el campo que desee editar");
+								System.out.println("1. Nombre");
+								System.out.println("2. Duracion");
+								System.out.println("3. Orden");
+								System.out.println("4. Espectaculo");
+								System.out.println("0. Cancelar");
+								int opcionEditarNumero = Metodos.validarOpcion();
+
+								switch (opcionEditarNumero) {
+								case 0:
+									break;
+
+								case 1:
+
+									break;
+
+								case 2:
+
+									break;
+
+								case 3:
+
+									break;
+
+								case 4:
+
+									break;
+
+								default:
+									break;
+								}
+
+								break;
+
+							case 5:
+
+								break;
+
+							default:
+								break;
+							}
+							break;
+
+						}
 					} catch (Exception e) {
 
 					}
 				} while (nuevaSesion.getPerfil().equals(Perfil.INVITADO));
-				System.out.println("\nSesion actual: " + nuevaSesion.getPerfil() + "\n");
-				System.out.println("Introduzca el numero al lado de la opcion para seleccionarla"
-						+ "1. Gestionar Espectaculos" + "0. Logout");
-				String opcionCoord = sc.nextLine().trim();
 
-				int opcCooInt = Integer.parseInt(opcionCoord);
-
-				switch (opcCooInt) {
-				case 0:
-					System.out.println("Desea cerrar la sesion? si/no");
-					String opcionCerrarSesion = sc.nextLine().toUpperCase().trim();
-					switch (opcionCerrarSesion) {
-					case "SI": {
-						nuevaSesion.setNombre("Invitado");
-						nuevaSesion.setPerfil(Perfil.INVITADO);
-						break;
-					}
-					case "NO": {
-						break;
-					}
-					case " ": {
-						System.err.println("Error al introducir la opcion");
-						System.out.println("Asegurese de no dejar en blanco el campo\n");
-						break;
-					}
-					default:
-						System.out.println("Opcion Invalida, solo se admite Y o N. \n");
-						break;
-					}
-
-				case 1:
-					System.out.println("Gestion de espectaculos\n" + "1. Crear espectaculo nuevo\n"
-							+ "2. Modificar espectaculo existente\n" + "3. Crear numero nuevo\n"
-							+ "4. Modificar numero existente\n" + "5. Asignar artista a numero existente\n"
-							+ "0. Cancelar Operacion\n");
-
-					String opcionGestionEsp = sc.nextLine().trim();
-					int opcionGestionEspInt = Integer.parseInt(opcionGestionEsp);
-
-					switch (opcionGestionEspInt) {
-					case 0:
-						usuarioController.cerrarSesion();
-						break;
-					case 1:
-						System.out.println("Introduzca un nombre para el espectaculo entre 1 y 25 caracteres:");
-						String nombreEspectaculo = sc.nextLine().trim();
-						
-						System.out.println("Introduzca la fecha de inicio del espectaculo:");
-						String fechaInicial = sc.nextLine().trim();
-						
-						System.out.println("Introduzca la fecha final del espectaculo:");
-						String fechaFinal = sc.nextLine();
-
-						break;
-
-					case 2:
-						System.out.println("Lista de espectaculos:\n"
-								+ "Seleccione el campo que desee editar\n"
-								+ "1. Nombre\n"
-								+ "2. Fecha inicial\n"
-								+ "3. Fecha fin"
-								+ "4. Coordinador del espectaculo\n"
-								+ "0. Cancelar\n");
-
-						int opcionEditarEspectaculo = Metodos.validarOpcion();
-
-						switch (opcionEditarEspectaculo) {
-						case 0:
-
-							break;
-						case 1:
-
-							break;
-
-						case 2:
-
-							break;
-
-						case 3:
-
-							break;
-
-						case 4:
-
-							break;
-
-						default:
-							break;
-						}
-						break;
-
-					case 3:
-
-						break;
-
-					case 4:
-						System.out.println("Lista de numeros existentes:");
-						System.out.println("Seleccione el campo que desee editar");
-						System.out.println("1. Nombre");
-						System.out.println("2. Duracion");
-						System.out.println("3. Orden");
-						System.out.println("4. Espectaculo");
-						System.out.println("0. Cancelar");
-						int opcionEditarNumero = Metodos.validarOpcion();
-
-						switch (opcionEditarNumero) {
-						case 0:
-							break;
-							
-						case 1:
-
-							break;
-
-						case 2:
-
-							break;
-
-						case 3:
-
-							break;
-
-						case 4:
-
-							break;
-
-						default:
-							break;
-						}
-
-						break;
-
-					case 5:
-
-						break;
-
-					default:
-						break;
-					}
-					break;
-
-				}
 				break;
 
 			default:

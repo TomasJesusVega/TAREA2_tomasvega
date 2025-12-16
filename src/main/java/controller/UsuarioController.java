@@ -5,7 +5,6 @@ import entidades.Perfil;
 import entidades.Sesion;
 import service.UsuarioService;
 import utiles.CargarProperties;
-import vista.Menu;
 
 public class UsuarioController {
 	private Sesion sesionActual;
@@ -16,7 +15,11 @@ public class UsuarioController {
 		this.sesionActual = sesionActual;
 		this.usuarioService = usuarioService;
 	}
-
+	
+	public UsuarioController() {
+		super();
+	}
+	
 	public boolean validarNombreReal(String nombreReal) {
 		if (!nombreReal.isEmpty() && nombreReal.matches("^[a-zA-Z ]+$")) {
 			return true;
@@ -26,7 +29,7 @@ public class UsuarioController {
 	}
 
 	public boolean validarEmail(String email) {
-		if (email.isEmpty() && email.matches("^^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
+		if (!email.isEmpty() && email.matches("^^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
 			return true;
 		} else {
 			return false;
@@ -40,22 +43,51 @@ public class UsuarioController {
 			return false;
 		}
 	}
-	
+
 	public Perfil validarPerfilPersona(String perfil) {
-	    if (perfil == null || perfil.isEmpty()) {
-	    	return null;
-	    }
-	    try {
-	        Perfil p = Perfil.valueOf(perfil.toUpperCase());
-	        if (p == Perfil.COORDINACION || p == Perfil.ARTISTA) {
-	            return p;
-	        }
-	        return null;
-	    } catch (IllegalArgumentException ex) {
-	        return null;
-	    }
+		if (perfil == null || perfil.isEmpty()) {
+			return null;
+		}
+		try {
+			Perfil p = Perfil.valueOf(perfil.toUpperCase());
+			if (p == Perfil.COORDINACION || p == Perfil.ARTISTA || p == Perfil.SOCIO) {
+				return p;
+			}
+			return null;
+		} catch (IllegalArgumentException ex) {
+			return null;
+		}
 	}
 	
+	public boolean validarNombreUsuario(String nombreUsuario) {
+		if (!nombreUsuario.isEmpty() && nombreUsuario.length() > 2 && nombreUsuario.matches("[a-zA-Z]*")) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean validarContrasenia(String contrasenia) {
+		if (!contrasenia.isEmpty() && contrasenia.length() > 2) {
+			return true;
+		}
+		return false;
+	}
+	public boolean validarApodo(String apodo) {
+		if (!apodo.isEmpty()) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean validarEspecialidad(String especialidad) {
+		if (!especialidad.isEmpty() & especialidad.equalsIgnoreCase("ACROBACIA")
+				|| especialidad.equalsIgnoreCase("MAGIA") || especialidad.equalsIgnoreCase("HUMOR")
+				|| especialidad.equalsIgnoreCase("EQUILIBRISMO") || especialidad.equalsIgnoreCase("MALABARISMO")) {
+			return true;
+		}
+		return false;
+	}
+
 	public boolean validarInicioSesion(String nombreUsuario, String contrasenia) {
 		if (nombreUsuario == null || contrasenia == null) {
 			return false;
@@ -91,6 +123,10 @@ public class UsuarioController {
 		return false;
 	}
 
+	public boolean registrarUsuario(String nombreReal, String email, String nacionalidad, String nombreUsuario, String contrasenia) {
+		
+		return false;
+	}
 	public void cerrarSesion() {
 		sesionActual.setNombre("Invitado");
 		sesionActual.setPerfil(Perfil.INVITADO);

@@ -9,7 +9,6 @@ import java.sql.Statement;
 import entidades.Credenciales;
 import entidades.Perfil;
 import entidades.Persona;
-import entidades.Sesion;
 import utiles.ConexionBDD;
 
 public class UsuarioDAO {
